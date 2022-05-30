@@ -1,0 +1,141 @@
+<html>
+<head>
+<title>SECRETS</title>
+<HTA:APPLICATION APPLICATIONNAME="SECRETS" ID="SECRETS" SCROLL="no"/>
+</head>
+<style type="text/css">
+body 
+{ 
+	font-family: comic sans ms; 
+	background-color: #04030f; 
+}
+
+table
+{
+	text-align: center;
+}
+
+caption 
+{ 
+	color: #ecf39e;
+	font-family: comic sans ms;
+	font-size: 40; 
+}
+
+input 
+{ 
+	background-color: #ecf39e; 
+	color: #31572c;
+}
+
+textarea 
+{ 
+	background-color: #31572C; 
+	color: #90a955;
+	font-size: 23px; 
+	font-family: comic sans ms;
+}
+</style>
+<script language="VBScript"> 
+Sub Window_OnLoad
+Dim width,height
+width=1000
+height=1000
+self.ResizeTo width,height
+End Sub
+Function Validate(ID)
+On Error Resume Next
+Key = Int(PASSWORD.value)
+If (PASSWORD.value = "") Then
+X = MsgBox("Enter the secret key.", 48, "Error!")
+Else If (CIPHERTEXT.value = "") Then
+X = MsgBox("Enter something...", 48, "Error!")
+Else
+Junk = SetTimeOut(KEYS(ID), 1)
+End If
+End If
+End Function
+Function KEYS(ID)
+text = PASSWORD.value
+code = 0
+Do Until text = ""
+code = ((Asc(Left(text, 1)))+code)
+text = Replace(text, Left(text, 1), "", "1", "1")
+Loop
+code = code Mod 255
+akey.value = code
+Junk = SetTimeOut(ID, 1)
+End Function
+Function Encrypt
+Alpha = Array("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z")
+text = CIPHERTEXT.value
+code = ""
+key = Int(akey.value)
+Do Until text = ""
+cnum = Asc(Left(text, 1))
+cnum = (cnum+key) Mod 255
+num = cnum Mod 26
+count = 0
+tst = num
+Do Until tst = cnum
+tst = tst+26
+count = count+1
+Loop
+code = code & Alpha(num) & count
+text = Replace(text, Left(text, 1), "", "1", "1")
+Loop
+CIPHERTEXT.value = code
+End Function
+Function Decrypt
+Alpha = Array("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z")
+text = CIPHERTEXT.value
+code = ""
+key = Int(akey.value)
+Do Until text = ""
+lttr = Left(text, 2)
+num = Asc(Left(lttr, 1))-65
+chk = Right(lttr, 1)
+count = 0
+Do Until count = Int(chk)
+num = num+26
+count = count+1
+Loop
+num = num-key
+Do While num <= 0
+num = num+255
+Loop
+Code = code & Chr(num)
+text = Replace(text, Left(text, 2), "", "1", "1")
+Loop
+CIPHERTEXT.value = code
+End Function
+</script>
+<body bgcolor="white"> 
+<input type="hidden" id="akey"> 
+<table align="center" width="400">
+<caption>
+<b title="Secrets...">CYPHER</b>
+<br>
+</caption>
+<tr> 
+<td align="center">
+<textarea title="Enter your secrets here..." id="CIPHERTEXT" cols="80" rows="15">
+</textarea>
+</td> 
+</tr>
+<tr>
+<td color="white" style="font-family: comic sans ms; font-size:20; color: white; text-decoration: bold;">
+<br>
+<label>
+Passkey: &nbsp;
+<input title="Enter your passkey!" type="password" id="PASSWORD">
+</label>
+<br><br>
+<input title="Encrypt Data." style="width: 140px; height:40px; color: #ECF39E; background-color: #4F772D; font-family:comic sans ms; font-size:18;" type="button" Value="Encrypt" id="E" onClick="Validate('Encrypt')" onmouseover="E.style.background='#90A955'" onmouseout="E.style.background='#4F772D'">
+&nbsp;&nbsp;&nbsp;&nbsp;
+<input title="Decrypt Data." style="width: 140px; height:40px; color: #ECF39E; background-color: #4F772D; font-family: comic sans ms; font-size:18;" type="button" Value="Decrypt" id="D" onClick="Validate('Decrypt')" onmouseover="D.style.background='#90A955'" onmouseout="D.style.background='#4F772D'">
+</td>
+</tr>
+</table> 
+</body> 
+</html>
